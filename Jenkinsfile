@@ -3,7 +3,7 @@ properties([pipelineTriggers([githubPush()])])
 pipeline {
     agent any
     stages {
-        stage('Checkout SCM') {
+        stage('Checkout SCM 1') {
             steps {
                 checkout([
                  $class: 'GitSCM',

@@ -14,6 +14,7 @@ pipeline {
         git 'https://github.com/deepak010789/realworld-fe-app'
       }
     }
+  
     stage('Build') {
       steps {
 				sh 'npm install'

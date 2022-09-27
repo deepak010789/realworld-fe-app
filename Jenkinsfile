@@ -5,17 +5,16 @@ properties([
 ])
 
 pipeline {
-    agent any
-	tools {nodejs "node"}
+  agent any
 	environment{
 			Test = "test"
 	}
-    stages {
-        stage('Build') {
-            steps {
+  stages {
+    stage('Build') {
+      steps {
 				sh 'npm install'
 				sh 'npm run build'
 			}
-        }
+    } 
 	}
- }
+}

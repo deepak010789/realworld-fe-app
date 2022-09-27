@@ -8,14 +8,13 @@ pipeline {
     agent any
 	  environment{
 			Test = "test"
-	  }
-    stage('Git') {
-      steps {
-        git 'https://github.com/deepak010789/realworld-fe-app'
-      }
-    }
-  
+	  } 
     stage('Build') {
+      stage('Git') {
+        steps {
+          git 'https://github.com/deepak010789/realworld-fe-app'
+        }
+      }
       steps {
 				sh 'npm install'
 				sh 'npm run build'

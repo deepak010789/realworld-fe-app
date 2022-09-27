@@ -6,19 +6,18 @@ properties([
 
 pipeline {
     agent any
-	  environment{
-			Test = "test"
-	  } 
-    stage('Build') {
-      stage('Git') {
-        steps {
-          git 'https://github.com/deepak010789/realworld-fe-app'
+    stages {
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+                echo 'Running pytest..'
+            }
         }
-      }
-      steps {
-				sh 'npm install'
-				sh 'npm run build'
-			}
-    } 
-	}
+        stage('Build') {
+            steps {
+                sh 'npm install'
+                sh 'npm run build'
+            }
+        }
+    }
 }

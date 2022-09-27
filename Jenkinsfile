@@ -7,6 +7,7 @@ pipeline {
                 echo 'Running pytest..'
             }
         }
+		
 		stage('Build') {
             steps {
                 sh 'npm install'

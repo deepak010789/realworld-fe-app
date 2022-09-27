@@ -52,7 +52,7 @@ The example application is a social blogging site (i.e. a Medium.com clone) call
 
 **The general page breakdown looks like this:**
 
-- Home page (URL: /#/)
+- Home page (URL: /#/ )
     - List of tags
     - List of articles pulled from either Feed, Global, or by Tag
     - Pagination for list of articles

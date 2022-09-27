@@ -1,13 +1,15 @@
 pipeline {
     agent any
     stages {
+
         stage('Test') {
             steps {
                 echo 'Testing..'
                 echo 'Running pytest..'
             }
         }
-        stage('Build') {
+        
+		stage('Build') {
             steps {
                 sh 'npm install'
                 sh 'npm run build'

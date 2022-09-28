@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Build Packer') {
             when {
-                expression { env.IMAGE_ID == '' }
+                expression { IMAGE_ID == '' }
             }
             steps {
                 ansiColor('xterm') {
@@ -31,22 +31,22 @@ pipeline {
                         sh './init/copy_ami_id.sh realworld-fe-app'
                     }
                     script {
-                        env.IMAGE_ID = readFile(file: './image_id.txt')
-                        echo "${env.IMAGE_ID}"
+                        IMAGE_ID = readFile(file: './image_id.txt')
+                        echo "${IMAGE_ID}"
                     }
                 }
             }
         }
         stage('Terraform Apply & Rolling Deployment') {
             when {
-                expression { env.IMAGE_ID.startsWith('ami-') }
+                expression { IMAGE_ID.startsWith('ami-') }
             }
             steps {
                 ansiColor('xterm') {
                     dir("${env.WORKSPACE}/deepak010789") {
-                        echo "${env.IMAGE_ID}"
+                        echo "${IMAGE_ID}"
                         sh "terraform init -reconfigure"
-                        sh "terraform apply -auto-approve -target=module.frontend -var instance_refresh_frontend=\"[1]\" -var image_id_frontend=${env.IMAGE_ID}"
+                        sh "terraform apply -auto-approve -target=module.frontend -var instance_refresh_frontend=\"[1]\" -var image_id_frontend=${IMAGE_ID}"
                     }
                 }
             }

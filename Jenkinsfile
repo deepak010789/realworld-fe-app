@@ -3,8 +3,7 @@ pipeline {
     options {
         ansiColor('xterm')
     }
-    parameters
-    {
+    parameters {
         choice(name: 'ENV', choices: ['prod'], description: 'Prod env')
     }
     environment {
@@ -22,7 +21,7 @@ pipeline {
         }
         stage('Build packer') {
             steps {
-                dir("${env.WORKSPACE}/deepak010789")
+                dir("${env.WORKSPACE}/deepak010789") {
                     sh 'packer build -machine-readable packer/frontend.json | tee "${PACKER_LOG}"  || { echo "packer build step failed" ; exit 1; }'
                     sh 'IMAGE_ID=$(cat "${PACKER_LOG}" | awk "match($0, /ami-.*/) { print substr($0, RSTART, RLENGTH) }" | tail -n 1 | tr -d "\\n")'
                     echo "$IMAGE_ID"
@@ -32,11 +31,12 @@ pipeline {
         }
         stage('Terraform Apply & Rolling Deployment') {
             steps {
-                dir("${env.WORKSPACE}/deepak010789")
+                dir("${env.WORKSPACE}/deepak010789") {
                     sh 'terraform init'
                     sh 'terraform plan -target=module.frontend -var image_id_frontend=${IMAGE_ID} -var instance_refresh_frontend="[1]"'
                 }
             }
         }
+
     }
 }

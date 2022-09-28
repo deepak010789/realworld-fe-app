@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    options {
+        ansiColor('xterm')
+    }
     parameters {
         choice(name: 'ENV', choices: ['prod'], description: 'Prod env')
     }
@@ -19,7 +22,7 @@ pipeline {
         stage('Build packer') {
             steps {
                 dir("${env.WORKSPACE}/deepak010789") {
-                    sh 'packer build -machine-readable packer/frontend.json | tee "${PACKER_LOG}"  || { echo "packer build step failed" ; exit 1; }'
+                    sh 'packer build -machine-readable packer/frontend.json -var "SSH_PRIVATE_KEY_FILE_PATH=/var/lib/jenkins/.ssh/infra360" | tee "${PACKER_LOG}"  || { echo "packer build step failed" ; exit 1; }'
                     sh 'IMAGE_ID=$(cat "${PACKER_LOG}" | awk "match($0, /ami-.*/) { print substr($0, RSTART, RLENGTH) }" | tail -n 1 | tr -d "\\n")'
                     echo "$IMAGE_ID"
                     echo "$IMAGE_ID" >> "${env.WORKSPACE}/deepak010789/image_id.txt"

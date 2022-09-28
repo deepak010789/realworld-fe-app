@@ -8,6 +8,7 @@ pipeline {
         ENV="${params.ENV}"
         PACKER_LOG="${env.WORKSPACE}/deepak010789/packer.log"
         ssh_key_path="/var/lib/jenkins/.ssh/infra360"
+        IMAGE_ID="${params.IMAGE_ID}"
     }
     stages {
         stage('Infra clone') {
@@ -20,7 +21,7 @@ pipeline {
         }
         stage('Build Packer') {
             when {
-                expression { IMAGE_ID == '' }
+                expression { env.IMAGE_ID == '' }
             }
             steps {
                 ansiColor('xterm') {
@@ -30,22 +31,22 @@ pipeline {
                         sh './init/copy_ami_id.sh realworld-fe-app'
                     }
                     script {
-                        IMAGE_ID = readFile(file: './image_id.txt')
-                        echo "${IMAGE_ID}"
+                        env.IMAGE_ID = readFile(file: './image_id.txt')
+                        echo "${env.IMAGE_ID}"
                     }
                 }
             }
         }
         stage('Terraform Apply & Rolling Deployment') {
             when {
-                expression { IMAGE_ID.startsWith('ami-') }
+                expression { env.IMAGE_ID.startsWith('ami-') }
             }
             steps {
                 ansiColor('xterm') {
                     dir("${env.WORKSPACE}/deepak010789") {
-                        echo "${IMAGE_ID}"
+                        echo "${env.IMAGE_ID}"
                         sh "terraform init -reconfigure"
-                        sh "terraform apply -auto-approve -target=module.frontend -var instance_refresh_frontend=\"[1]\" -var image_id_frontend=${IMAGE_ID}"
+                        sh "terraform apply -auto-approve -target=module.frontend -var instance_refresh_frontend=\"[1]\" -var image_id_frontend=${env.IMAGE_ID}"
                     }
                 }
             }

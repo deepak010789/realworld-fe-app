@@ -1,6 +1,7 @@
 pipeline {
     agent any
     parameters {
+        string(name: 'IMAGE_ID', defaultValue: '', description: 'If you provide Image Id e.g ami-xxxxxxxxxx, It will skip Build Packer step.')
         choice(name: 'ENV', choices: ['prod'], description: 'Prod env')
     }
     environment {
@@ -18,23 +19,29 @@ pipeline {
             }
         }
         stage('Build Packer') {
+            when {
+                expression { IMAGE_ID == '' }
+            }
             steps {
                 ansiColor('xterm') {
-                    script {
+                    dir("${env.WORKSPACE}/deepak010789") {
                         sh 'export ssh_key_path=${ssh_key_path}'
-                        sh 'packer build deepak010789/packer/frontend.json | tee "${PACKER_LOG}"  || { echo "packer build step failed" ; exit 1; }'
-                        sh './deepak010789/init/copy_ami_id.sh realworld-fe-app'
+                        sh 'packer build packer/frontend.json | tee "${PACKER_LOG}"  || { echo "packer build step failed" ; exit 1; }'
+                        sh './init/copy_ami_id.sh realworld-fe-app'
+                    }
+                    script {
+                        IMAGE_ID = readFile(file: './image_id.txt')
+                        echo "${IMAGE_ID}"
                     }
                 }
             }
         }
         stage('Terraform Apply & Rolling Deployment') {
+            when {
+                expression { IMAGE_ID.startsWith('ami-') }
+            }
             steps {
                 ansiColor('xterm') {
-                    script {
-                        IMAGE_ID = readFile(file: './image_id.txt')
-                        echo "${IMAGE_ID}"
-                    }
                     dir("${env.WORKSPACE}/deepak010789") {
                         echo "${IMAGE_ID}"
                         sh "terraform init -reconfigure"

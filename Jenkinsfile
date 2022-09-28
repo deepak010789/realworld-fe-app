@@ -6,7 +6,7 @@ pipeline {
     environment {
         ENV="${params.ENV}"
         PACKER_LOG="${env.WORKSPACE}/deepak010789/packer.log"
-        SSH_KEY_PATH="/var/lib/jenkins/.ssh/infra360"
+        ssh_key_path="/var/lib/jenkins/.ssh/infra360"
     }
     stages {
         stage('Infra clone') {
@@ -21,7 +21,8 @@ pipeline {
             steps {
                 dir("${env.WORKSPACE}/deepak010789") {
                     ansiColor('xterm') {
-                        sh 'packer build -machine-readable packer/frontend.json -var "SSH_PRIVATE_KEY_FILE_PATH=${SSH_KEY_PATH}" | tee "${PACKER_LOG}"  || { echo "packer build step failed" ; exit 1; }'
+                        sh 'export ssh_key_path=${ssh_key_path}'
+                        sh 'packer build packer/frontend.json -var "ssh_key_path=$ssh_key_path" | tee "${PACKER_LOG}"  || { echo "packer build step failed" ; exit 1; }'
                         // sh 'IMAGE_ID=$(cat "${PACKER_LOG}" | awk "match($0, /ami-.*/) { print substr($0, RSTART, RLENGTH) }" | tail -n 1 | tr -d "\\n")'
                         // echo "$IMAGE_ID"
                         // echo "$IMAGE_ID" >> "${env.WORKSPACE}/deepak010789/image_id.txt"

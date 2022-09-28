@@ -6,14 +6,14 @@ pipeline {
     environment {
         ENV="${params.ENV}"
         PACKER_LOG="${env.WORKSPACE}/deepak010789/packer.log"
-        ssh_key_path="/var/lib/jenkins/.ssh/infra360"
+        ssh_key_path="/var/lib/jenkins/.ssh/toptal"
     }
     stages {
         stage('Infra clone') {
             steps {
                 dir('deepak010789') {
                     deleteDir()
-                    git credentialsId: 'infra360-pem', poll: false, url: 'git@git.toptal.com:aron.szekely/deepak010789.git', branch: "deployment_testing"
+                    git credentialsId: 'infra360-pem', poll: false, url: 'git@git.toptal.com:aron.szekely/deepak010789.git', branch: "master"
                 }
             }
         }

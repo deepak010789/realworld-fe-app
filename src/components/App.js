@@ -36,7 +36,7 @@ function App() {
   const dispatch = useDispatch();
   const redirectTo = useSelector((state) => state.common.redirectTo);
   const appLoaded = useSelector((state) => state.common.appLoaded);
-
+  console.error("Sample error...")
   useEffect(() => {
     if (redirectTo) {
       // dispatch(push(redirectTo));

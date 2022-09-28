@@ -22,7 +22,7 @@ pipeline {
                 ansiColor('xterm') {
                     script {
                         sh 'export ssh_key_path=${ssh_key_path}'
-                        sh 'packer build packer/frontend.json | tee "${PACKER_LOG}"  || { echo "packer build step failed" ; exit 1; }'
+                        sh 'packer build deepak010789/packer/frontend.json | tee "${PACKER_LOG}"  || { echo "packer build step failed" ; exit 1; }'
                         sh './deepak010789/init/copy_ami_id.sh realworld-fe-app'
                     }
                 }

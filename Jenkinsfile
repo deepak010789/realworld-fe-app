@@ -47,7 +47,7 @@ pipeline {
             steps {
                 ansiColor('xterm') {
                     script {
-                        sh 'lighthouse https://toptal-fe.infra360.io/ --chrome-flags="--headless"'
+                        sh 'lighthouse https://toptal-fe.infra360.io/ --chrome-flags="--headless" --output json --output-path ./report.json'
                         lighthouseReport('./report.json')
                     }
                 }

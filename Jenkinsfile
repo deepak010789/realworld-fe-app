@@ -47,7 +47,7 @@ pipeline {
             steps {
                 ansiColor('xterm') {
                     script {
-                        sh 'npx lighthouse-ci https://toptal-fe.infra360.io --jsonReport --report=.'
+                        sh 'npx lighthouse-ci https://toptal-fe.infra360.io --jsonReport --report=. --disable-network-throttling --disable-device-emulation'
                         lighthouseReport('./report.json')
                     }
                 }

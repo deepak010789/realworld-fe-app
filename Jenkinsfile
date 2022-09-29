@@ -17,28 +17,38 @@ pipeline {
                 }
             }
         }
-        stage('Build Packer') {
+        // stage('Build Packer') {
+        //     steps {
+        //         ansiColor('xterm') {
+        //             script {
+        //                 sh 'export ssh_key_path=${ssh_key_path}'
+        //                 sh 'packer build deepak010789/packer/frontend.json | tee "${PACKER_LOG}"  || { echo "packer build step failed" ; exit 1; }'
+        //                 sh './deepak010789/init/copy_ami_id.sh realworld-fe-app'
+        //             }
+        //         }
+        //     }
+        // }
+        // stage('Terraform Apply & Rolling Deployment') {
+        //     steps {
+        //         ansiColor('xterm') {
+        //             script {
+        //                 IMAGE_ID = readFile(file: './image_id.txt')
+        //                 echo "${IMAGE_ID}"
+        //             }
+        //             dir("${env.WORKSPACE}/deepak010789") {
+        //                 echo "${IMAGE_ID}"
+        //                 sh "terraform init -reconfigure"
+        //                 sh "terraform apply -auto-approve -target=module.frontend -var instance_refresh_frontend=\"[1]\" -var image_id_frontend=${IMAGE_ID}"
+        //             }
+        //         }
+        //     }
+        // }
+        stage('Performance Testing') {
             steps {
                 ansiColor('xterm') {
                     script {
-                        sh 'export ssh_key_path=${ssh_key_path}'
-                        sh 'packer build deepak010789/packer/frontend.json | tee "${PACKER_LOG}"  || { echo "packer build step failed" ; exit 1; }'
-                        sh './deepak010789/init/copy_ami_id.sh realworld-fe-app'
-                    }
-                }
-            }
-        }
-        stage('Terraform Apply & Rolling Deployment') {
-            steps {
-                ansiColor('xterm') {
-                    script {
-                        IMAGE_ID = readFile(file: './image_id.txt')
-                        echo "${IMAGE_ID}"
-                    }
-                    dir("${env.WORKSPACE}/deepak010789") {
-                        echo "${IMAGE_ID}"
-                        sh "terraform init -reconfigure"
-                        sh "terraform apply -auto-approve -target=module.frontend -var instance_refresh_frontend=\"[1]\" -var image_id_frontend=${IMAGE_ID}"
+                        sh 'npx lighthouse-ci https://toptal-fe.infra360.io --jsonReport --report=.'
+                        lighthouseReport('./report.json')
                     }
                 }
             }
